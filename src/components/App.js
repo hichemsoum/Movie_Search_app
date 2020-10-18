@@ -3,14 +3,14 @@ import "../App.css";
 import Header from "./Header";
 import Movie from "./Movie";
 import Search from "./Search";
+import Loader from "./Loader";
 
 
-const MOVIE_API_URL = "https://www.omdbapi.com/?s=man&apikey=*****";
+const MOVIE_API_URL = "https://www.omdbapi.com/?s=man&apikey=3337b0f4";
 
 
 const initialState = {
   searching: false,
-  loading: true,
   movies: [],
   errorMessage: null
 };
@@ -22,21 +22,18 @@ const reducer = (state, action) => {
       return {
         ...state,
         searching:true,
-        loading: false,
         errorMessage: null
       };
     case "SEARCH_MOVIES_SUCCESS":
       return {
         ...state,
         searching:false,
-        loading: false,
         movies: action.payload
       };
       case "SEARCH_MOVIES_FAILURE":
         return {
           ...state,
         searching:false,
-        loading: false,
         errorMessage: action.error
       };
     default:
@@ -66,7 +63,7 @@ const App = () => {
       	type: "SEARCH_MOVIES_REQUEST"
     	});
 	
-        fetch(`https://www.omdbapi.com/?s=${searchValue}&apikey=****`)
+        fetch(`https://www.omdbapi.com/?s=${searchValue}&apikey=3337b0f4`)
       	.then(response => response.json())
       	.then(jsonResponse => {
         	if (jsonResponse.Response === "True") {
@@ -83,7 +80,7 @@ const App = () => {
       	});
 	  };
 
-    const { movies, errorMessage, loading, searching } = state;
+    const { movies, errorMessage, searching } = state;
 
     return (
     <div className="App">
@@ -91,10 +88,8 @@ const App = () => {
       <Search search={search} />
       <p className="App-intro">Sharing a few of our favourite movies</p>
       <div className="movies">
-        {loading && !errorMessage && !searching ? (
-          <span>loading... </span>
-        ) : searching  ?(
-          <span>searching...</span>
+        {!errorMessage && searching ? (
+          <Loader/>
         ) : errorMessage ? (
           <div className="errorMessage">{errorMessage}</div>
         ) : (
